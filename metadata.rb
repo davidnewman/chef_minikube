@@ -4,7 +4,7 @@ maintainer_email 'newman.de+minikub@gmail.com'
 license 'MIT'
 description 'Installs/Configures minikube'
 long_description 'Installs/Configures minikube'
-version '0.1.0'
+version '0.1.1'
 chef_version '>= 12.1' if respond_to?(:chef_version)
 supports 'windows'
 supports 'mac_os_x'
