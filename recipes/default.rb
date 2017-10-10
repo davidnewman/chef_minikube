@@ -10,6 +10,7 @@ command_name = 'minikube'
 platform = 'linux'
 arch = 'amd64'
 extension = ''
+do_install = true
 version = node['minikube']['version'] != 'latest' ? "v#{node['minikube']['version']}" : 'latest'
 
 case node['platform_family'] 
@@ -24,7 +25,6 @@ end
 cmd = "#{node['minikube']['install_prefix']}#{File::SEPARATOR}#{command_name}#{extension}"
 
 if File.exist?(cmd)
-
 	log "#{cmd} exists, looking for version: #{version}" do
 		level :info
 	end
@@ -36,20 +36,23 @@ if File.exist?(cmd)
 		level :info
 	end
 
-	if stdout.strip != "minikube version: #{version}"
+	if stdout.strip == "minikube version: #{version}"
+		do_install = false
+	end
+end
 
-		log "installing minikube to #{node['minikube']['install_prefix']}" do
-			level :info
-		end
+if do_install
+	log "installing minikube to #{node['minikube']['install_prefix']}" do
+		level :info
+	end
 
-		directory node['minikube']['install_prefix'] do
-			mode '0755'
-			recursive
-		end
+	directory node['minikube']['install_prefix'] do
+		mode '0755'
+		recursive
+	end
 
-		remote_file cmd do
-			source "#{node['minikube']['download_base_url']}/#{version}/#{command_name}-#{platform}-#{arch}#{extension}"
-			mode '0755'
-		end
+	remote_file cmd do
+		source "#{node['minikube']['download_base_url']}/#{version}/#{command_name}-#{platform}-#{arch}#{extension}"
+		mode '0755'
 	end
 end
